@@ -9,22 +9,33 @@ let user;
 const tweets = []
 
 app.post("/sign-up", (req,res) => {
+    const {username, avatar} = req.body
+
+    if (!username || !avatar) {
+        res.status(400).send("Todos os campos são obrigatórios!")
+        return
+    }
+
     user = req.body
-    res.send("Ok")
-    console.log(user)
+    res.status(201).send("Ok")
 })
 
 app.post("/tweets", (req,res) => {
+    const {username, tweet} = req.body
+
+    if (!username || !tweet) {
+        res.status(400).send("Todos os campos são obrigatórios!")
+        return
+    }
+
     tweets.push(req.body)
-    res.send("Ok")
+    res.status(201).send("Ok")
 })
 
 app.get("/tweets", (req,res) => {
     tweets.reverse()
-    tweets.slice(10)
+    tweets.slice(11)
     
-    console.log(tweets)
-
     const response = []
     for (const tweet of tweets) {
         let obj = {
