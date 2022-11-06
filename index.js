@@ -49,4 +49,25 @@ app.get("/tweets", (req,res) => {
     res.send(response)
 })
 
+app.get("/tweets/:user", (req,res) => {
+    let param = req.params.user
+    
+    tweets.reverse()
+    
+    const response = []
+    for (const tweet of tweets) {
+        if (tweet.username === param) {
+            let obj = {
+                "username": tweet.username,
+                "avatar": user.avatar,
+                "tweet": tweet.tweet
+            }
+            response.push(obj)
+        }
+    }
+
+    response.slice(11)
+    res.send(response)
+})
+
 app.listen(5000)
