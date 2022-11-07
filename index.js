@@ -5,7 +5,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-let user;
+const user = []
 const tweets = []
 
 app.post("/sign-up", (req,res) => {
@@ -16,31 +16,46 @@ app.post("/sign-up", (req,res) => {
         return
     }
 
-    user = req.body
+    user.push(req.body)
     res.status(201).send("Ok")
 })
 
 app.post("/tweets", (req,res) => {
-    const {username, tweet} = req.body
+    const {tweet} = req.body
+    const username = req.headers.user
 
     if (!username || !tweet) {
         res.status(400).send("Todos os campos são obrigatórios!")
         return
     }
 
-    tweets.push(req.body)
+    tweets.push({
+        username: username,
+        tweet: tweet
+    })
     res.status(201).send("Ok")
 })
 
 app.get("/tweets", (req,res) => {
+    const page = parseInt(req.query.page)
+
     tweets.reverse()
-    tweets.slice(11)
+    if (page) {tweets.slice(10*(page-1),10*(page)+1)}
+    else {tweets.slice(11)}
     
     const response = []
     for (const tweet of tweets) {
+        let avatar;
+
+        user.forEach((a)=>{
+            if (a.username === tweet.username){
+                avatar =  a.avatar
+            }
+        })
+
         let obj = {
             "username": tweet.username,
-            "avatar": user.avatar,
+            "avatar": avatar,
             "tweet": tweet.tweet
         }
         response.push(obj)
